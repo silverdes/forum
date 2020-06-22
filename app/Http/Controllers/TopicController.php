@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class TopicController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('auth')->except(['index','show']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -27,6 +31,7 @@ class TopicController extends Controller
     public function create()
     {
         //
+        return view('topics.create');
     }
 
     /**
@@ -38,6 +43,17 @@ class TopicController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'title'=> 'required|min:5',
+            'content'=> 'required|min:10',
+            'Wrong Captcha' => 'required|captcha'
+        ]);
+       $topic= auth()->user()->topics()->create([
+           'title' => request('title'),
+           'content' => request('content')
+       ]);
+
+        return redirect()->route('topics.show', $topic->id);
     }
 
     /**
@@ -49,6 +65,7 @@ class TopicController extends Controller
     public function show(Topic $topic)
     {
         //
+        return view('topics.show', compact('topic'));
     }
 
     /**
@@ -60,6 +77,9 @@ class TopicController extends Controller
     public function edit(Topic $topic)
     {
         //
+        $this->authorize('update', $topic);
+        return view('topics.edit', compact('topic'));
+
     }
 
     /**
@@ -72,6 +92,15 @@ class TopicController extends Controller
     public function update(Request $request, Topic $topic)
     {
         //
+        $this->authorize('update', $topic);
+
+        $data = $request->validate([
+            'title'=> 'required|min:5',
+            'content'=> 'required|min:10'
+        ]);
+
+        $topic->update($data);
+        return redirect()->route('topics.show', $topic->id);
     }
 
     /**
@@ -83,5 +112,11 @@ class TopicController extends Controller
     public function destroy(Topic $topic)
     {
         //
+        $this->authorize('delete', $topic);
+
+        Topic::destroy($topic->id);
+
+        return redirect('/');
+        
     }
 }
