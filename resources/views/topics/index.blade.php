@@ -9,7 +9,7 @@
             <p>{{$topic->content}}</p>
             <div class="d-flex justify-content-between align-items-center">
             <small>Posted at: {{$topic->created_at->format('d/m/Y à H:m')}}</small>
-            <span class="badge badge-danger p-2">{{ $topic->user->name}}</span>
+            <span class="badge badge-pill badge-dark p-2">{{ $topic->user->name}}</span>
             </div>
             </div>
             @endforeach
