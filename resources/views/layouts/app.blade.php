@@ -15,6 +15,8 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    
+
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -49,25 +51,40 @@
                                 </li>
                             @endif
                         @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                        @unless (auth()->user()->unreadNotifications->isEmpty())
+                            
+        <li class="nav-item dropdown">
+            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre><span class="badge badge-pill badge-danger" style="color:white; position: absolute; z-index: 999; left: 20px;
+                top: 5px;">
+                {{ auth()->user()->unreadNotifications->count() }} </span><span class="caret"><i class="fa fa-bell"style="color:black; font-size:20px;"></i></span>
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+            @foreach (auth()->user()->unreadNotifications as $notification)
+            <a href="{{ route('topics.showFromNotification', ['topic'=> $notification->data['topicId'], 'notification'=> $notification->id]) }}" class="dropdown-item">{{ $notification->data['username']}} added a comment on <strong> {{ $notification->data['topicTitle'] }} </strong></a>
+            @endforeach
+            </div>
+        </li>
+                        @endunless
+                        <li class="nav-item dropdown">
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                {{ Auth::user()->name }} <span class="caret"></span>
+                            </a>
+                
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                
+                        <a href="{{route('topics.create')}}" class="dropdown-item">Add new Topic</a>
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault();
+                                                    document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
                                 </a>
-
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    
-                            <a href="{{route('topics.create')}}" class="dropdown-item">Add new Topic</a>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
+                
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
                         @endguest
                     </ul>
                 </div>
@@ -81,5 +98,6 @@
     
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"></script>
+        <script src="https://kit.fontawesome.com/8b570caedb.js" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -25,4 +25,6 @@ Route::post('/comments/{topic}', 'CommentController@store')->name('comments.stor
 
 Route::post('/commentReply/{comment}', 'CommentController@storeCommentReply')->name('comments.storeReply');
 
-Route::post('/markedAsSolution/{topic}/{comment}','CommentController@markedAsSolution')->name('comments.markedAsSolution');
+Route::post('/markedAsSolution/{topic}/{comment}', 'CommentController@markedAsSolution')->name('comments.markedAsSolution');
+
+Route::get('showFromNotification/{topic}/{notification}', 'TopicController@showFromNotification')->name('topics.showFromNotification');
